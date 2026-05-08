@@ -127,7 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="db\DBManager.h" />
+    <ClInclude Include="model\Sample.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="db\DBManager.cpp" />
     <ClCompile Include="main\main.cpp" />
+    <ClCompile Include="model\Sample.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

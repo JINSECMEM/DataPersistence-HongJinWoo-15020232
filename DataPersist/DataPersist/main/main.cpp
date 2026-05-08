@@ -1,20 +1,54 @@
-﻿// DataPersist.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
-//
-
+#include <chrono>
+#include <ctime>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
+#include "../db/DBManager.h"
 
-int main()
-{
-    std::cout << "Hello World!\n";
+static std::string now_str() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(now);
+    std::tm tm{};
+    localtime_s(&tm, &t);
+    std::ostringstream ss;
+    ss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S");
+    return ss.str();
 }
 
-// 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
-// 프로그램 디버그: <F5> 키 또는 [디버그] > [디버깅 시작] 메뉴
+int main() {
+    const std::string DB_PATH = "samples.db";
+    DBManager db;
 
-// 시작을 위한 팁: 
-//   1. [솔루션 탐색기] 창을 사용하여 파일을 추가/관리합니다.
-//   2. [팀 탐색기] 창을 사용하여 소스 제어에 연결합니다.
-//   3. [출력] 창을 사용하여 빌드 출력 및 기타 메시지를 확인합니다.
-//   4. [오류 목록] 창을 사용하여 오류를 봅니다.
-//   5. [프로젝트] > [새 항목 추가]로 이동하여 새 코드 파일을 만들거나, [프로젝트] > [기존 항목 추가]로 이동하여 기존 코드 파일을 프로젝트에 추가합니다.
-//   6. 나중에 이 프로젝트를 다시 열려면 [파일] > [열기] > [프로젝트]로 이동하고 .sln 파일을 선택합니다.
+    // --- 프로그램 시작: DB 로드 ---
+    if (db.Load(DB_PATH))
+        std::cout << "[Load] " << DB_PATH << " loaded.\n";
+    else
+        std::cout << "[Load] No existing DB. Starting fresh.\n";
+
+    // --- 런타임 CRUD ---
+    std::string ts = now_str();
+    db.Add({ "S001", "AlphaWafer", SampleStatus::created,    ts, ts });
+    db.Add({ "S002", "BetaWafer",  SampleStatus::in_process, ts, ts });
+    db.Add({ "S003", "GammaWafer", SampleStatus::defect,     ts, ts });
+
+    if (auto s = db.Get("S002")) {
+        s->status     = SampleStatus::completed;
+        s->updated_at = now_str();
+        db.Update(*s);
+    }
+
+    db.Delete("S003");
+
+    std::cout << "\n[Samples]\n";
+    for (const auto& s : db.GetAll())
+        std::cout << "  " << s.id << " | " << s.name
+                  << " | " << StatusToString(s.status) << "\n";
+
+    // --- 프로그램 종료: DB 저장 ---
+    if (db.Save(DB_PATH))
+        std::cout << "\n[Save] " << DB_PATH << " saved.\n";
+    else
+        std::cout << "\n[Save] Failed to save DB.\n";
+
+    return 0;
+}
