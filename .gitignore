@@ -1,0 +1,77 @@
+# Claude Code local settings
+.claude/
+
+# Visual Studio cache / options
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Compiled object files
+*.o
+*.obj
+*.pch
+*.ipch
+
+# Precompiled headers
+*.gch
+
+# Linker files
+*.ilk
+*.map
+*.exp
+
+# Compiled libraries
+*.lib
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+
+# Debug symbols
+*.pdb
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+!**/packages/repositories.config
+*.nuget.props
+*.nuget.targets
+
+# CMake
+CMakeSettings.json
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# MSBuild crash logs
+MSBuild_*.failure.txt
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+~$*
